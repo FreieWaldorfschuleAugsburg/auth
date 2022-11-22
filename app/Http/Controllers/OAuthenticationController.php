@@ -6,20 +6,24 @@ namespace App\Http\Controllers;
 use App\Exceptions\InvalidAuthorizationRequest;
 use App\Exceptions\InvalidClientException;
 use App\Exceptions\InvalidParameterException;
-use App\Helper\Authentication\ClientHelper;
+use App\Helpers\Authentication\ClientHelper;
 use App\helpers\authentication\FormHelper;
+use App\Ldap\LdapUserWithTokens;
 use App\Models\AuthorizationCode;
+use App\Models\StoredAuthenticationCode;
+use App\OAuth2\server\OAuthServerHandler;
 use Carbon\Carbon;
-use Carbon\Traits\Date;
-use http\Client;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Validation\Rules\In;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Spatie\Crypto\Rsa\Exceptions\FileDoesNotExist;
 
 class OAuthenticationController
 {
@@ -29,37 +33,41 @@ class OAuthenticationController
      */
     public function authorize(Request $request): \Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application|\Illuminate\Routing\Redirector
     {
-        $params = FormHelper::parseParameters($request);
+        $params = FormHelper::parseAuthorizationRequestParameters($request);
         $clientHelper = new ClientHelper();
-        $client = $clientHelper->verifyClient($params['client_id'], $params['redirect_uri']);
-        foreach ($params as $key => $param) {
-            session()->put($key, $param);
+        if ($clientHelper->verifyClient($params['client_id'], $params['redirect_uri'])) {
+            foreach ($params as $key => $param) {
+                session()->put($key, $param);
+            }
+            if (!Auth::user()) {
+                return redirect('/auth/login');
+            } else return redirect('/auth/confirm');
         }
-        if (!Auth::user()) {
-            return redirect('/auth/login');
-        } else return redirect('/auth/confirm');
+        throw new InvalidClientException('client verification failed');
     }
 
 
     public function viewLogin()
     {
-        return Inertia::render('login');
+        Log::error("Logging in view");
+        return Inertia::render('Login');
     }
 
     /**
-     * @throws InvalidAuthorizationRequest
      */
-    public function storeLogin(Request $request)
+    public function storeLogin(Request $request): \Symfony\Component\HttpFoundation\Response
+
     {
         $credentials = $request->validate([
             'samaccountname' => 'required',
             'password' => 'required'
         ]);
-        if (!$credentials || !Auth::check()) {
+        $passed = Auth::attempt($credentials);
+        if (!$passed) {
             session()->regenerate(true);
-            return redirect('/auth/login');
+            return Inertia::location('/auth/login');
         }
-        return redirect('/');
+        return Inertia::location('/auth/confirm');
     }
 
     /**
@@ -80,26 +88,37 @@ class OAuthenticationController
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws InvalidAuthorizationRequest
+     * @throws FileDoesNotExist
      */
-    public function acceptAuthorization(Request $request): \Symfony\Component\HttpFoundation\Response
+    public function acceptAuthorization(Request $request)
     {
-        $verifiedParams = FormHelper::verifyClientData($request);
-        $authorizationCode = new AuthorizationCode();
-        $authorizationCode->setClientId($verifiedParams['client_id']);
-        $authorizationCode->setUserId(Auth::id());
-        $authorizationCode->setExpirationDate(Carbon::now()->addMinutes(2));
-        $authorizationCode->setRedirectUri($verifiedParams['redirect_uri']);
-        $encryptedCode = Crypt::encryptString(json_encode($authorizationCode));
-        return Inertia::location("$verifiedParams[redirect_uri]?code=$encryptedCode&state=$verifiedParams[state]");
+        $verifiedParams = FormHelper::verifyAuthorizationGrantRequest($request);
+        $user = Auth::user();
+        $authorizationCode = new AuthorizationCode($verifiedParams['client_id'], $user['samaccountname'][0], Carbon::now()->addMinutes(2), $verifiedParams['redirect_uri']);
+        $token = $authorizationCode->getJWT();
+        $storedAuthCode = $authorizationCode->getDataBaseVersion($token);
+        $storedAuthCode->save();
+        session()->invalidate();
+
+        return Inertia::location("$verifiedParams[redirect_uri]?code=$token&state=$verifiedParams[state]");
     }
 
     public function denyAuthorization()
     {
-
+        $redirectUri = session()->get('redirect_uri');
+        session()->regenerate(true);
+        return Inertia::location($redirectUri);
     }
 
     public function IssueAccessToken(Request $request)
     {
+        $verifiedParams = FormHelper::parseAccessTokenRequestFormData($request);
+        if ($verifiedParams['grant_type'] === 'code') {
+            OAuthServerHandler::handleTokenIssueWithAuthorizationCode($request, $verifiedParams);
+        }
+        if ($verifiedParams['grant_type'] === 'password') {
+            OAuthServerHandler::handleTokenIssueWithPassword($request, $verifiedParams);
+        }
 
 
     }

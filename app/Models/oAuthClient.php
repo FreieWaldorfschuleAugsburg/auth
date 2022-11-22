@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class oAuthClient extends Model
 {
-    protected $table = 'oauth_clients';
+    protected $table = 'auth_clients';
     protected $primaryKey = 'id';
     protected $connection = 'sqlite';
 

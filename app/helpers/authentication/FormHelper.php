@@ -17,10 +17,10 @@ class FormHelper
     /**
      * @throws InvalidParameterException
      */
-    public static function parseParameters(Request $request)
+    public static function parseAuthorizationRequestParameters(Request $request)
     {
         $params = [];
-        $requiredParams = config('requiredParams.oauth2');
+        $requiredParams = config('parameters.authorization_request');
         foreach ($requiredParams as $requiredParam) {
             $queries = $request->query();
             if (!key_exists($requiredParam, $queries)) {
@@ -34,18 +34,16 @@ class FormHelper
         }
         return $params;
     }
-
-
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws InvalidAuthorizationRequest
      */
-    public static function verifyClientData(Request $request): array
+    public static function verifyAuthorizationGrantRequest(Request $request): array
     {
         $verifiedParams = [];
-        $requiredParams = config('requiredParams.oauth2');
-        foreach ($requiredParams as $key => $requiredParam) {
+        $requiredParams = config('parameters.authorization_request');
+        foreach ($requiredParams as $requiredParam) {
             if (Crypt::decryptString($request->input($requiredParam)) === session()->get($requiredParam)) {
                 $verifiedParams[$requiredParam] = Crypt::decryptString($request->input($requiredParam));
             } else throw new InvalidAuthorizationRequest('The delivered params did not match');
@@ -56,17 +54,16 @@ class FormHelper
     /**
      * @throws InvalidParameterException
      */
-    public static function parseFormData(Request $request)
+    public static function parseAccessTokenRequestFormData(Request $request)
     {
-        $requiredFields = config('requiredParams.getAccessToken');
+        $validatedFields = [];
+        $requiredFields = config('parameters.token_request');
         foreach ($requiredFields as $requiredField) {
-            if (!$request->input($requiredField)) {
-                throw new InvalidParameterException('invalid form data');
-            }
+            if ($request->input($requiredField)) {
+                $validatedFields[$requiredField] = $request->input($requiredField);
+            } else throw new InvalidParameterException('invalid form data');
         }
-
-
-
+        return $validatedFields;
     }
 
 

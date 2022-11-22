@@ -59,7 +59,7 @@ const form = reactive({
 })
 
 function submit() {
-    Inertia.post('/login', form)
+    Inertia.post('/auth/login', form)
 }
 
 </script>

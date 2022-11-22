@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Helper\Authentication;
+namespace App\Helpers\Authentication;
 
 use App\Exceptions\InvalidClientException;
 use App\Models\oAuthClient;
@@ -12,18 +12,18 @@ class ClientHelper
     /**
      * @throws InvalidClientException
      */
-    public function verifyClient(int $clientId, string $redirectUrl)
+    public function verifyClient(string $clientId, string $redirectUrl): bool
     {
         $client = oAuthClient::find($clientId);
-        if ($client) {
-            $this->verifyRedirectUrl($client, $redirectUrl);
+        if ($client && $this->verifyRedirectUrl($client, $redirectUrl)) {
+            return true;
         } else throw new InvalidClientException('client verification failed');
-        return $client;
     }
+
     /**
      * @throws InvalidClientException
      */
-    public function verifyClientIdAndSecret(int $clientId, string $clientSecret, string $redirectUrl)
+    public function verifyClientIdAndSecret(string $clientId, string $clientSecret, string $redirectUrl)
     {
         $client = oAuthClient::find($clientId);
         if ($client) {
@@ -33,29 +33,26 @@ class ClientHelper
         }
         throw new InvalidClientException('client verification failed');
     }
+
     /**
      * @throws InvalidClientException
      */
-    function verifyRedirectUrl(oAuthClient $client, string $redirectUrl)
+    function verifyRedirectUrl(oAuthClient $client, string $redirectUrl): bool
     {
-        if ($client->redirect === $redirectUrl) {
-            return $client;
-        } else throw new InvalidClientException('client verification failed');
+        return $client->redirect === $redirectUrl;
     }
 
 
     /**
      * @throws InvalidClientException
      */
-    function verifyClientSecret(oAuthClient $client, string $clientSecret)
+    function verifyClientSecret(oAuthClient $client, string $clientSecret): bool
     {
-        if ($client->secret === $clientSecret) {
-            return $client;
-        } else throw new InvalidClientException('client verification failed');
+        return $client->secret === $clientSecret;
     }
 
 
-    public static function getClient(int $clientId)
+    public static function getClient(string $clientId)
     {
         return oAuthClient::find($clientId);
     }

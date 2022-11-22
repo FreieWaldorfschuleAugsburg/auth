@@ -39,6 +39,7 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'ldap',
+            'hash' => false
         ],
         'api' => [
             'driver' => 'passport',
@@ -81,16 +82,7 @@ return [
 
         'ldap' => [
             'driver' => 'ldap',
-            'model' => \App\Ldap\LdapUserWithTokens::class,
-            'database' => [
-                'model' => \App\Models\User::class,
-                'sync_passwords' => false,
-                'sync_attributes' => [
-                    'name' => 'cn',
-                    'email' => 'mail',
-                    'samaccountname' => 'samaccountname'
-                ],
-            ],
+            'model' => LdapRecord\Models\ActiveDirectory\User::class,
         ],
 
 

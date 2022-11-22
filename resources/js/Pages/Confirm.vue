@@ -2,6 +2,7 @@
     <div class="flex flex-col p-10 py-20 items-center">
 
         <p class="font-sans font-bold text-4xl ">Bitte bestätigen Sie</p>
+        <p class="font-sans font-bold text-4xl ">{{ props.client_name.name }} möchte Zugriff</p>
 
         <img class="h-60 mt-10" src="/assets/img/auth-draw.svg" alt="">
 
@@ -37,7 +38,8 @@ import {reactive} from "vue";
 import {Inertia} from "@inertiajs/inertia";
 
 const props = defineProps({
-    client_id: {type: String},
+    client_id: {type: Object},
+    client_name: {type: String},
     redirect_uri: {type: String},
     response_type: {type: String},
     state: {type: String}

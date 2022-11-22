@@ -1,13 +1,13 @@
 <?php
 
 return [
-    'oauth2' => [
+    'authorization_request' => [
         'client_id',
         'redirect_uri',
         'response_type',
         'state'
     ],
-    'getAccessToken' => [
+    'token_request' => [
         'grant_type',
         'client_id',
         'client_secret',
