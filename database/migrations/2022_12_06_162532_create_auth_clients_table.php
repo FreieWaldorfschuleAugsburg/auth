@@ -12,14 +12,12 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('samaccountname');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
+        Schema::create('auth_clients', function (Blueprint $table) {
+            $table->uuid('client_id');
+            $table->string('client_secret');
+            $table->string('client_name');
+            $table->string('redirect_uri');
+            $table->boolean('revoked');
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ return new class extends Migration {
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('auth_codes');
     }
 };

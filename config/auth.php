@@ -68,21 +68,13 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'ldap',
-            'model' => \App\Ldap\LdapUserWithTokens::class,
-            'database' => [
-                'model' => \App\Models\User::class,
-                'sync_passwords' => false,
-                'sync_attributes' => [
-                    'name' => 'cn',
-                    'email' => 'mail',
-                ],
-            ],
+            'model' => \LdapRecord\Models\ActiveDirectory\User::class
 
         ],
 
         'ldap' => [
             'driver' => 'ldap',
-            'model' => LdapRecord\Models\ActiveDirectory\User::class,
+            'model' => \LdapRecord\Models\ActiveDirectory\User::class
         ],
 
 

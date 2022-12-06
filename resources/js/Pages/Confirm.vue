@@ -2,7 +2,7 @@
     <div class="flex flex-col p-10 py-20 items-center">
 
         <p class="font-sans font-bold text-4xl ">Bitte bestätigen Sie</p>
-        <p class="font-sans font-bold text-4xl ">{{ props.client_name.name }} möchte Zugriff</p>
+        <p class="font-sans font-bold text-4xl ">{{ props.client_name }} möchte Zugriff</p>
 
         <img class="h-60 mt-10" src="/assets/img/auth-draw.svg" alt="">
 
@@ -44,19 +44,21 @@ const props = defineProps({
     response_type: {type: String},
     state: {type: String}
 })
+
+
 const acceptData = reactive({
     client_id: props.client_id,
     redirect_uri: props.redirect_uri,
     response_type: props.response_type,
-    state: props.state
+    state: props.state,
 })
 
 function accept() {
-    Inertia.post('/auth/confirm', acceptData)
+    Inertia.post('/oauth2/confirm', acceptData)
 }
 
 function deny() {
-    Inertia.delete('/authorize')
+    Inertia.delete('/oauth2/confirm')
 }
 
 
