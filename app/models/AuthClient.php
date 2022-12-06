@@ -10,8 +10,7 @@ class AuthClient extends Model
 {
     protected $table = 'auth_clients';
     protected $primaryKey = 'client_id';
-    protected $attributes = ['client_id, client_secret, redirect_uri, revoked'];
-    protected $fillable = ['client_id', 'client_secret', 'redirect_uri', 'revoked'];
+    public $incrementing = false;
 
 
     public static function getClient(string $clientId)
@@ -19,11 +18,17 @@ class AuthClient extends Model
         return AuthClient::find($clientId);
     }
 
+    /**
+     * @throws InvalidClientException
+     */
     public static function verifyClientData(array $tokenRequestData): bool
     {
         $client = self::getClient($tokenRequestData['client_id']);
+        if (!$client) {
+            throw new InvalidClientException("Client not found");
+        }
 
-        if (!$client || $client->client_secret !== $tokenRequestData('client_secret') || $client->redirect_uri !== $tokenRequestData['redirect_uri']) {
+        if ($client->client_secret !== $tokenRequestData['client_secret'] || $client->redirect_uri !== $tokenRequestData['redirect_uri']) {
             return false;
         } else return true;
     }
@@ -49,9 +54,6 @@ class AuthClient extends Model
         }
         return true;
     }
-
-
-
 
 
 }

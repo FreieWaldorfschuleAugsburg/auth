@@ -1,9 +1,6 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,8 +17,9 @@ use Inertia\Inertia;
 Route::get('/oauth2/authorize', [\App\Http\Controllers\OAuth2Controller::class, 'authorize']);
 Route::post('/oauth2/authorize', [\App\Http\Controllers\OAuth2Controller::class, 'login']);
 
-Route::post('oauth2/confirm', [\App\Http\Controllers\OAuth2Controller::class, 'confirm']);
-Route::delete('oauth2/confirm', [\App\Http\Controllers\OAuth2Controller::class, 'deny']);
+Route::post('oauth2/confirm', [\App\Http\Controllers\OAuth2Controller::class, 'grantAuthorization']);
+Route::delete('oauth2/confirm', [\App\Http\Controllers\OAuth2Controller::class, 'denyAuthorization']);
+
+Route::post('oauth2/token', [\App\Http\Controllers\OAuth2Controller::class, 'token']);
 
 
-require __DIR__ . '/auth.php';
