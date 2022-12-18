@@ -23,3 +23,4 @@ Route::delete('oauth2/confirm', [\App\Http\Controllers\OAuth2Controller::class, 
 Route::post('oauth2/token', [\App\Http\Controllers\OAuth2Controller::class, 'token']);
 
 
+Route::get('admin/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index']);

@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Auth\Access\AuthorizationCodeService;
+use App\Auth\TokenService;
 use App\Exceptions\InvalidAuthenticationCode;
 use App\Exceptions\InvalidAuthorizationRequest;
 use App\Exceptions\InvalidClientException;
 use App\Exceptions\InvalidParameterException;
+use App\Http\ParameterService;
 use App\models\AuthClient;
 use App\models\AuthCode;
+use App\models\DecodedAuthorizationCode;
 use App\server\Oauth2Server;
 use App\server\ParameterHelper;
 use Illuminate\Http\Request;
@@ -21,6 +25,22 @@ use Ramsey\Uuid\Uuid;
 
 class OAuth2Controller extends Controller
 {
+    protected TokenService $tokenService;
+    protected ParameterService $parameterService;
+
+    protected AuthorizationCodeService $authorizationCodeService;
+
+    /**
+     * @param TokenService $tokenService
+     * @param ParameterService $parameterService
+     */
+    public function __construct(TokenService $tokenService, ParameterService $parameterService, AuthorizationCodeService $authorizationCodeService)
+    {
+        $this->tokenService = $tokenService;
+        $this->parameterService = $parameterService;
+        $this->authorizationCodeService = $authorizationCodeService;
+    }
+
 
     /**
      * @throws InvalidParameterException
@@ -28,13 +48,7 @@ class OAuth2Controller extends Controller
      */
     public function authorize(Request $request): bool|\Inertia\Response
     {
-        $requestParameters = [
-            'client_id' => $request->input('client_id'),
-            'redirect_uri' => $request->input('redirect_uri'),
-            'scope' => $request->input('scope'),
-            'response_type' => $request->input('response_type'),
-            'state' => $request->input('state')
-        ];
+        $requestParameters = $this->parameterService->getRequestParameters($request);
 
         $clientParametersToVerify = [
             'client_id' => $requestParameters['client_id'],
@@ -42,6 +56,9 @@ class OAuth2Controller extends Controller
         ];
         Session::start();
         Session::put('requestParameters', $requestParameters);
+        Log::debug("Session parameters set");
+        Session::save();
+
         if (Oauth2Server::verifyRequestParameters($requestParameters) && AuthClient::verifyClientAttributes($requestParameters['client_id'], $clientParametersToVerify)) {
             if (Auth::user()) {
                 return Inertia::render('Confirm', Oauth2Server::getParameterPropsForConfirmDialogue($requestParameters));
@@ -55,27 +72,17 @@ class OAuth2Controller extends Controller
      */
     public function grantAuthorization(Request $request): \Symfony\Component\HttpFoundation\Response
     {
+        Log::debug("Authorization Grant requested");
         $previouslyProvidedParameters = Session::get('requestParameters');
-        $providedParameters = [
-            'client_id' => $request->input('client_id'),
-            'redirect_uri' => $request->input('redirect_uri'),
-            'response_type' => $request->input('response_type'),
-            'state' => $request->input('state')
-        ];
-
-        if (!ParameterHelper::validateParameters($previouslyProvidedParameters, $providedParameters)) {
-            Oauth2Server::denyAuthorizationRequest($providedParameters['redirect_uri']);
+        $requestParameters = $this->parameterService->getRequestParameters($request);
+        if (!ParameterHelper::validateParameters($previouslyProvidedParameters, $requestParameters)) {
+            Oauth2Server::denyAuthorizationRequest($requestParameters['redirect_uri']);
         }
-        $user = Auth::user();
-        $userName = $user->getDn();
+        $distinguishedName = Auth::user()->getDn();
         $codeIdentifier = Uuid::uuid4();
-        $authorizationCode = Oauth2Server::generateAuthorizationCode($previouslyProvidedParameters['client_id'], $providedParameters['redirect_uri'], $userName, $codeIdentifier);
-        $authCode = new AuthCode;
-        $authCode->code_id = $codeIdentifier;
-        $authCode->code_hash = Hash::make($authorizationCode);
-        Log::alert($authorizationCode);
-        $authCode->save();
-        return Oauth2Server::returnToCallbackUrlWithAuthorizationCode($previouslyProvidedParameters['redirect_uri'], $authorizationCode);
+        $authorizationCode = $this->authorizationCodeService->generateAuthorizationCode($requestParameters['client_id'], $requestParameters['redirect_uri'], $distinguishedName, $codeIdentifier);
+        $this->authorizationCodeService->storeAuthorizationCode($codeIdentifier, $authorizationCode);
+        return Oauth2Server::returnToCallbackUrlWithAuthorizationCode($previouslyProvidedParameters['redirect_uri'], $authorizationCode, $previouslyProvidedParameters['state']);
     }
 
     public function denyAuthorization(Request $request): \Symfony\Component\HttpFoundation\Response
@@ -103,8 +110,6 @@ class OAuth2Controller extends Controller
         if (!$previouslyProvidedParameters) {
             throw new InvalidParameterException('No parameters provided');
         }
-
-
         return Inertia::render('Confirm', Oauth2Server::getParameterPropsForConfirmDialogue($previouslyProvidedParameters));
     }
 
@@ -115,36 +120,28 @@ class OAuth2Controller extends Controller
      */
     public function token(Request $request)
     {
-
+        Log::debug("Token requested");
         $tokenRequestData = [
             'grant_type' => $request->input('grant_type'),
             'authorization_code' => $request->input('code'),
-            'client_id' => $request->input('client_id'),
-            'client_secret' => $request->input('client_secret'),
             'redirect_uri' => $request->input('redirect_uri')
         ];
-        if (!Oauth2Server::verifyTokenRequest($tokenRequestData)) {
-            throw new InvalidAuthorizationRequest('Provided data does not match');
-        }
+        Log::debug('app.requests', ['request' => $request]);
         if (!AuthCode::verifyAuthenticationCode($tokenRequestData['authorization_code'])) {
             throw new InvalidAuthenticationCode('Provided code does not match issued code');
         }
+        $decodedAuthorizationCode = AuthCode::decodeAuthenticationCode($tokenRequestData['authorization_code']);
 
-        $decoded = AuthCode::decodeAuthenticationCode($tokenRequestData['authorization_code']);
-        $username = $decoded['sub'];
-        $accessToken = Oauth2Server::generateAccessToken($username);
-        $idToken = Oauth2Server::generateIdToken($username);
+        $accessToken = $this->tokenService->generateAccessToken($decodedAuthorizationCode->client_id, $decodedAuthorizationCode->sub);
+        $idToken = $this->tokenService->generateIdToken($decodedAuthorizationCode->client_id, $decodedAuthorizationCode->sub);
         $refreshToken = Oauth2Server::generateRefreshToken();
+        Log::debug("Returning token...");
         return response()->json([
             'access_token' => $accessToken,
+            'token_type' => 'Bearer',
             'id_token' => $idToken,
             'refresh_token' => $refreshToken
         ]);
-
-
-
-
-
     }
 
     /**

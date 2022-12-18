@@ -1,33 +1,33 @@
 <template>
-    <div class="flex flex-col p-10 py-20 items-center">
+    <section class="flex mt-10 flex-col justify-center items-center p-3 md:p-10">
+        <div class="md:w-3/4 bg-white p-5 md:p-20 rounded-3xl shadow shadow-xl shadow-waldorf-red-light">
+            <p class="font-karla-extra-bold text-headline-large text-center">Bestätigung</p>
+            <p class="font-karla-medium text-title-medium text-gray-600 text-center u">Herzlich willkommen bei der Freien Waldorfschule Augsburg! Bitte bestätigen Sie, sich für {{props.client_name}} anzumelden.</p>
+            <div
+                  class=" mt-10">
+                <div class="w-full flex gap-3">
+                    <form @submit.prevent="accept" class="w-full">
+                        <button type="submit" class=" w-full bg-waldorf-red text-white p-3 rounded-xl font-karla-bold transition ease-in-out hover:scale-95 hover:bg-waldorf-red-dark">Bestätigen
+                        </button>
+                    </form>
 
-        <p class="font-sans font-bold text-4xl ">Bitte bestätigen Sie</p>
-        <p class="font-sans font-bold text-4xl ">{{ props.client_name }} möchte Zugriff</p>
+                    <form @submit.prevent="deny" class="w-full">
+                        <button type="submit" class="w-full bg-waldorf-red text-white p-3 rounded-xl font-karla-bold transition ease-in-out hover:scale-95 hover:bg-waldorf-red-dark">Ablehnen</button>
+                    </form>
 
-        <img class="h-60 mt-10" src="/assets/img/auth-draw.svg" alt="">
-
-        <div class="w-full sm:w-4/6 lg:w-6/12 sm:w-4/6 lg:w-6/12 flex gap-2 justify-center mt-10 ">
-            <form @submit.prevent="accept">
-                <button type="submit" class="bg-blue-600 p-3 rounded text-white font-sans font-medium">Bestätigen
-                </button>
-            </form>
-
-            <form @submit.prevent="deny">
-                <button type="submit" class="bg-blue-600 p-3 rounded text-white font-sans font-medium">Ablehnen</button>
-            </form>
-
-
+                </div>
+            </div>
         </div>
-    </div>
-
-
+    </section>
 </template>
 
 <script lang="ts">
 import {reactive} from "vue";
+import PublicLayout from "@/Shared/PublicLayout.vue";
 
 export default {
     name: "Login",
+    layout: PublicLayout
 }
 </script>
 
@@ -40,6 +40,7 @@ import {Inertia} from "@inertiajs/inertia";
 const props = defineProps({
     client_id: {type: Object},
     client_name: {type: String},
+    scope: {type: String},
     redirect_uri: {type: String},
     response_type: {type: String},
     state: {type: String}
@@ -48,6 +49,7 @@ const props = defineProps({
 
 const acceptData = reactive({
     client_id: props.client_id,
+    scope: props.scope,
     redirect_uri: props.redirect_uri,
     response_type: props.response_type,
     state: props.state,

@@ -1,47 +1,44 @@
 <template>
-    <div class="flex items-center justify-center flex-col px-96 py-20">
-
-        <div class="rounded-xl border border-gray-300/50 flex flex-col w-full">
-
-
-            <img class="h-60 mt-10" src="/assets/img/auth-illustration.svg" alt="">
-            <div class="">
-                <div class="">
-                    <form @submit.prevent="submit" class="px-5 py-8 rounded-lg mt-5 space-y-5">
-                        <div class="flex flex-col gap-1 text-white">
-
+        <section class="flex mt-10 flex-col justify-center items-center p-10">
+            <div class="w-3/4 bg-white p-20 rounded-3xl shadow shadow-xl shadow-waldorf-red-light">
+                <p class="font-karla-extra-bold text-headline-large text-center">Anmeldung</p>
+                <p class="font-karla-medium text-title-medium text-gray-600 text-center">Herzlich willkommen bei der Freien Waldorfschule Augsburg! Bitte melden Sie sich an.</p>
+                    <form @submit.prevent="submit"
+                          class="rounded-lg mt-5 space-y-5">
+                        <div class="flex flex-col gap-1">
+                            <label class="font-karla-medium text-gray-600 text-category lg:text-body" for="username">Benutzername</label>
                             <input
-                                class="rounded p-1.5 lg:p-3 bg-transparent border-gray-300 border border-gray-600 outline-none focus:outline-none text-white" placeholder="Benutzername"
-                                type="text" name="username" id="username" v-model="form.samaccountname">
+                                class="rounded-xl p-2 bg-transparent border border-gray-300  appearance-none focus:border-none focus:outline-waldorf-red focus:ring-0 font-karla-semibold"
+                                type="text" name="username" id="username" v-model="form.samaccountname" >
                         </div>
                         <div class="flex flex-col gap-1 font-inter-medium">
+                            <label class="font-karla-medium text-gray-600 text-category lg:text-body" for="password">Passwort</label>
                             <input
-                                class="rounded p-1.5 lg:p-3 bg-transparent border-gray-300 border border-gray-600 outline-none focus:outline-none text-white" placeholder="Passwort"
+                                class="rounded-xl p-2 bg-transparent border border-gray-300 outline-none appearance-none focus:border-none focus:outline-waldorf-red focus:ring-0"
                                 type="password" name="password" id="password" v-model="form.password">
                         </div>
 
                         <div class="flex flex-col">
                             <button type="submit"
-                                    class="bg-blue-600 text-white p-2.5 lg:p-4 rounded font-sans text-lg ">
-                                Anmelden
+                                    class="bg-waldorf-red text-white p-3 rounded-xl font-karla-bold transition ease-in-out hover:scale-95 hover:bg-waldorf-red-dark">Anmelden
                             </button>
                         </div>
 
                     </form>
-                </div>
             </div>
 
-        </div>
-    </div>
+        </section>
 
 
 </template>
 
 <script lang="ts">
 import {reactive} from "vue";
+import PublicLayout from "@/Shared/PublicLayout.vue";
 
 export default {
     name: "Login",
+    layout: PublicLayout
 }
 </script>
 
@@ -64,8 +61,8 @@ function submit() {
 
 <style scoped>
 
-::placeholder{
-    @apply text-gray-400
+::placeholder {
+    @apply text-gray-400 font-karla-regular
 }
 
 </style>

@@ -3,6 +3,7 @@
 namespace App\server;
 
 use App\Exceptions\InvalidParameterException;
+use Illuminate\Support\Facades\Log;
 
 class ParameterHelper
 {
@@ -12,9 +13,11 @@ class ParameterHelper
     public static function validateParameters(array $previouslyProvidedParameters, array $providedParameters): bool
 
     {
-        foreach ($providedParameters as $providedParameterKey => $providedParameterValue) {
-            if (!in_array($providedParameterValue, $previouslyProvidedParameters) || $providedParameterValue !== $previouslyProvidedParameters[$providedParameterKey]) {
-                throw new InvalidParameterException("Parameter $providedParameterValue did not match previously provided parameter $previouslyProvidedParameters[$providedParameterKey]!");
+        Log::debug(print_r($providedParameters, true));
+        Log::debug(print_r($previouslyProvidedParameters, true));
+        foreach ($previouslyProvidedParameters as $previouslyProvidedParameterKey => $previouslyProvidedParameterValue) {
+            if (!in_array($previouslyProvidedParameterValue, $providedParameters) || $previouslyProvidedParameterValue !== $providedParameters[$previouslyProvidedParameterKey]) {
+                throw new InvalidParameterException("Previously provided parameter $previouslyProvidedParameterKey did not match provided parameter $providedParameters[$previouslyProvidedParameterKey]!");
             }
         }
 
