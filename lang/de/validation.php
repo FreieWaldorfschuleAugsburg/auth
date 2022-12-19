@@ -159,10 +159,10 @@ return [
             'rule-name' => 'custom-message',
         ],
         'samaccountname' => [
-            'required' => 'Please provide a username!'
+            'required' => 'Bitte geben Sie einen Benutzernamen an!'
         ],
         'password' => [
-            'required' => 'Please provide a password!'
+            'required' => 'Bitte geben Sie ein Passwort an!'
         ]
 
     ],

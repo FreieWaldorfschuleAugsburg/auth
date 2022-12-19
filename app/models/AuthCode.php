@@ -38,7 +38,6 @@ class AuthCode extends Model
         //check if code matches hash
         $code = AuthCode::getById($decoded->code_identifier);
         if (!Hash::check($providedAuthenticationCode, $code->code_hash)) {
-            Log::alert($providedAuthenticationCode);
             $codeHash = Hash::make($providedAuthenticationCode);
             throw new InvalidAuthenticationCode("The provided Code does not matched the issued code because $codeHash !== $code->code_hash");
         }

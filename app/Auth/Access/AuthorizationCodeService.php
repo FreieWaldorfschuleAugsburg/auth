@@ -13,15 +13,13 @@ class AuthorizationCodeService
 {
     public function generateAuthorizationCode(string $clientId, string $redirectUri, string $samaccountname, string $codeIdentifier): string
     {
-        Log::debug("Code requested");
         $key = env('AUTH_KEY');
         $payload = $this->generateAuthorizationCodePayload($clientId, $redirectUri, $samaccountname, $codeIdentifier);
         $token = JWT::encode($payload, $key, 'HS256');
-        Log::debug("Authorization Code granted");
         return trim(Crypt::encrypt($token));
     }
 
-    public function storeAuthorizationCode(string $codeId, string $authorizationCode)
+    public function storeAuthorizationCode(string $codeId, string $authorizationCode): void
     {
         $storableAuthCode = new AuthCode();
         $storableAuthCode->code_id = $codeId;
