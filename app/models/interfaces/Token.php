@@ -6,6 +6,6 @@ interface Token
 {
     public function getJWT();
 
-    public static function config();
+    public function config();
 
 }

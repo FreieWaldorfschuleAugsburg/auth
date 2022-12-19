@@ -71,7 +71,7 @@ class ParameterService
 
             }
         }
-        $parameters['client_id'] = $client->client_name;
+        $parameters['client_id'] = $client->client_id;
         return $parameters;
     }
 

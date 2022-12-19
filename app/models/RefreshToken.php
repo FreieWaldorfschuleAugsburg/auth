@@ -59,15 +59,15 @@ class RefreshToken extends Model implements EncryptedToken
         return Crypt::encrypt($tokenToEncode);
     }
 
-    public static function config()
+    public  function config()
     {
         return config('auth');
     }
 
     public static function decode(string $encodedTokenToDecode): RefreshToken
     {
-        $algorithm = RefreshToken::config()['token_algorithm'];
-        $publicKey = file_get_contents(app()->basePathRefreshToken::config()['public_key_path']);
+        $algorithm = config('auth')['token_algorithm'];
+        $publicKey = file_get_contents(app()->basePath(config('auth')['public_key_path']));
         $decodedToken = Crypt::decrypt($encodedTokenToDecode);
         $decodedArray = (array)JWT::decode($decodedToken, new Key($publicKey, $algorithm));
         return new RefreshToken($decodedArray['client_id'], $decodedArray['expires'], $decodedToken);

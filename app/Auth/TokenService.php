@@ -35,9 +35,9 @@ class TokenService
         return new AccessToken($this->config()['issuer'], $clientId, $sub);
     }
 
-    public function generateRefreshToken(string $clientId, string $sub)
+    public function generateRefreshToken(string $clientId, string $sub): RefreshToken
     {
-        return new RefreshToken($clientId);
+        return new RefreshToken($clientId, $sub);
     }
 
 
