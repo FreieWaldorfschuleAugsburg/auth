@@ -4,24 +4,25 @@ return [
     'issuer' => env('AUTH_ISSUER'),
     'token_algorithm' => env('AUTH_TOKEN_ALGORITHM', 'RS256'),
     'private_key_path' => env('AUTH_PRIVATE_KEY_PATH'),
+    'public_key_path' => env('AUTH_PUBLIC_KEY_PATH'),
     'key' => env('AUTH_KEY'),
 
 
-/*
-|--------------------------------------------------------------------------
-| Authentication Defaults
-|--------------------------------------------------------------------------
-|
-| This option controls the default authentication "guard" and password
-| reset options for your application. You may change these defaults
-| as required, but they're a perfect start for most applications.
-|
-*/
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Defaults
+    |--------------------------------------------------------------------------
+    |
+    | This option controls the default authentication "guard" and password
+    | reset options for your application. You may change these defaults
+    | as required, but they're a perfect start for most applications.
+    |
+    */
 
-'defaults' => [
-    'guard' => 'web',
-    'passwords' => 'users',
-],
+    'defaults' => [
+        'guard' => 'web',
+        'passwords' => 'users',
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -41,17 +42,17 @@ return [
     */
 
     'guards' => [
-    'web' => [
-        'driver' => 'session',
-        'provider' => 'ldap',
-        'hash' => false
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'ldap',
+            'hash' => false
+        ],
+        'api' => [
+            'driver' => 'passport',
+            'provider' => 'ldap',
+            'hash' => false,
+        ]
     ],
-    'api' => [
-        'driver' => 'passport',
-        'provider' => 'ldap',
-        'hash' => false,
-    ]
-],
 
     /*
     |--------------------------------------------------------------------------
@@ -71,23 +72,23 @@ return [
     */
 
     'providers' => [
-    'users' => [
-        'driver' => 'ldap',
-        'model' => \LdapRecord\Models\ActiveDirectory\User::class
+        'users' => [
+            'driver' => 'ldap',
+            'model' => \LdapRecord\Models\ActiveDirectory\User::class
 
+        ],
+
+        'ldap' => [
+            'driver' => 'ldap',
+            'model' => \LdapRecord\Models\ActiveDirectory\User::class
+        ],
+
+
+        // 'users' => [
+        //     'driver' => 'database',
+        //     'table' => 'users',
+        // ],
     ],
-
-    'ldap' => [
-        'driver' => 'ldap',
-        'model' => \LdapRecord\Models\ActiveDirectory\User::class
-    ],
-
-
-    // 'users' => [
-    //     'driver' => 'database',
-    //     'table' => 'users',
-    // ],
-],
 
     /*
     |--------------------------------------------------------------------------
@@ -105,13 +106,13 @@ return [
     */
 
     'passwords' => [
-    'users' => [
-        'provider' => 'users',
-        'table' => 'password_resets',
-        'expire' => 60,
-        'throttle' => 60,
+        'users' => [
+            'provider' => 'users',
+            'table' => 'password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
     ],
-],
 
     /*
     |--------------------------------------------------------------------------

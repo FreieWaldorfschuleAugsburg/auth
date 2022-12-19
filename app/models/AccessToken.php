@@ -2,11 +2,12 @@
 
 namespace App\models;
 
+use App\models\interfaces\Token;
 use Carbon\Carbon;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Log;
 
-class AccessToken
+class AccessToken implements Token
 {
     public string $iss;
     public string $aud;
@@ -25,7 +26,7 @@ class AccessToken
 
     }
 
-    public function generateJWT(): string
+    public function getJWT(): string
     {
         $algorithm = $this->config()['token_algorithm'];
         $privateKey = file_get_contents(app()->basePath($this->config()['private_key_path']));
@@ -33,7 +34,7 @@ class AccessToken
     }
 
 
-    protected function config()
+    public function config()
     {
         return config('auth');
     }

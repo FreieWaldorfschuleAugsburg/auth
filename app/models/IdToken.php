@@ -2,11 +2,12 @@
 
 namespace App\models;
 
+use App\models\interfaces\Token;
 use Carbon\Carbon;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Log;
 
-class IdToken extends IdTokenUser
+class IdToken extends IdTokenUser implements Token
 {
     public string $iss;
     public string $aud;
@@ -23,17 +24,16 @@ class IdToken extends IdTokenUser
 
     }
 
-    public function generateJWT()
+    public function getJWT(): string
     {
         $algorithm = $this->config()['token_algorithm'];
         $privateKey = file_get_contents(app()->basePath($this->config()['private_key_path']));
         $token = JWT::encode((array)$this, $privateKey, $algorithm);
-        Log::debug($token);
         return $token;
     }
 
 
-    protected function config()
+    public function config()
     {
         return config('auth');
     }

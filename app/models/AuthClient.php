@@ -56,4 +56,21 @@ class AuthClient extends Model
     }
 
 
+    /**
+     * @throws InvalidClientException
+     */
+    public static function verifyClientSecret(string $clientId, string $clientSecret)
+    {
+        $client = self::getClient($clientId);
+        if (!$client) {
+            throw new InvalidClientException('Client does not exist');
+        }
+
+        if ($client->client_secret === $clientSecret) {
+            return true;
+        }
+        return false;
+    }
+
+
 }
