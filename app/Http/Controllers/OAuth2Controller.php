@@ -67,11 +67,7 @@ class OAuth2Controller extends Controller
     public function grantAuthorization(Request $request): \Symfony\Component\HttpFoundation\Response
     {
         $storedRequestParameters = Session::get('requestParameters');
-        Log::debug("Session values");
-        Log::debug($storedRequestParameters);
         $requestParameters = $this->parameterService->getRequestParameters($request);
-        Log::debug("New values");
-        Log::debug($requestParameters);
         if ($this->parameterService->compareParameterArray($storedRequestParameters, $requestParameters)) {
             Oauth2Server::denyAuthorizationRequest($requestParameters['redirect_uri']);
         }
@@ -94,14 +90,10 @@ class OAuth2Controller extends Controller
      */
     public function login(LoginRequest $request): \Inertia\Response|\Symfony\Component\HttpFoundation\Response
     {
-
-        $request->validated();
-
         if (request()->has('prevalidate')) {
             return redirect()->back();
         }
 
-        Log::debug("Test");
         $credentials = [
             'samaccountname' => $request->input('samaccountname'),
             'password' => $request->input('password')

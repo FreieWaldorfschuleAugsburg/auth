@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->uuid('token_id');
             $table->string('client_id');
             $table->string('token_hash');
-            $table->float('expires');
+            $table->bigInteger('expires');
             $table->timestamps();
         });
     }
