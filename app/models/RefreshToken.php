@@ -12,20 +12,24 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use LdapRecord\LdapRecordException;
 use Ramsey\Uuid\Uuid;
 
+
+/**
+ * Class BookChild.
+ *
+ * @property string $token_id;
+ * @property string $client_id;
+ * @property float $expires;
+ * @property  string $token_hash;
+ *
+ */
 class RefreshToken extends Model implements EncryptedToken
 {
 
-    public string $token_id;
-
-    public string $client_id;
-
     public string $sub;
-    public float $expires;
-
-
     protected $table = 'refresh_tokens';
     protected $primaryKey = 'client_id';
     protected $fillable = ['token_id', 'client_id', 'token_hash', 'expires'];
@@ -50,6 +54,7 @@ class RefreshToken extends Model implements EncryptedToken
     {
         $algorithm = $this->config()['token_algorithm'];
         $privateKey = file_get_contents(app()->basePath($this->config()['private_key_path']));
+        $this->store();
         return JWT::encode((array)$this, $privateKey, $algorithm);
 
     }
@@ -59,7 +64,7 @@ class RefreshToken extends Model implements EncryptedToken
         return Crypt::encrypt($tokenToEncode);
     }
 
-    public  function config()
+    public function config()
     {
         return config('auth');
     }

@@ -52,6 +52,11 @@ class OAuth2Controller extends Controller
             'client_id' => $requestParameters['client_id'],
             'redirect_uri' => $requestParameters['redirect_uri']
         ];
+
+        if (Session::has('requestParameters')) {
+            $requestParameters = Session::get('requestParameters');
+        }
+
         if ($this->parameterService->verifyRequestParameters($requestParameters) && AuthClient::verifyClientAttributes($requestParameters['client_id'], $clientAttributesToVerify)) {
             Session::put("requestParameters", $requestParameters);
             if (Auth::user()) {
@@ -67,11 +72,7 @@ class OAuth2Controller extends Controller
     public function grantAuthorization(Request $request): \Symfony\Component\HttpFoundation\Response
     {
         $storedRequestParameters = Session::get('requestParameters');
-        Log::debug("Session values");
-        Log::debug($storedRequestParameters);
         $requestParameters = $this->parameterService->getRequestParameters($request);
-        Log::debug("New values");
-        Log::debug($requestParameters);
         if ($this->parameterService->compareParameterArray($storedRequestParameters, $requestParameters)) {
             Oauth2Server::denyAuthorizationRequest($requestParameters['redirect_uri']);
         }
@@ -94,14 +95,10 @@ class OAuth2Controller extends Controller
      */
     public function login(LoginRequest $request): \Inertia\Response|\Symfony\Component\HttpFoundation\Response
     {
-
-        $request->validated();
-
         if (request()->has('prevalidate')) {
             return redirect()->back();
         }
 
-        Log::debug("Test");
         $credentials = [
             'samaccountname' => $request->input('samaccountname'),
             'password' => $request->input('password')
