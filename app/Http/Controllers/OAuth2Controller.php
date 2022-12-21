@@ -52,6 +52,11 @@ class OAuth2Controller extends Controller
             'client_id' => $requestParameters['client_id'],
             'redirect_uri' => $requestParameters['redirect_uri']
         ];
+
+        if (Session::has('requestParameters')) {
+            $requestParameters = Session::get('requestParameters');
+        }
+
         if ($this->parameterService->verifyRequestParameters($requestParameters) && AuthClient::verifyClientAttributes($requestParameters['client_id'], $clientAttributesToVerify)) {
             Session::put("requestParameters", $requestParameters);
             if (Auth::user()) {

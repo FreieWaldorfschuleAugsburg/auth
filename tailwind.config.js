@@ -49,7 +49,7 @@ module.exports = {
                 "label-small": "12px",
                 "body-large": "16px",
                 "body-medium": "14px",
-                "body small": "12px"
+                "body-small": "12px"
 
             },
             colors: {
@@ -58,6 +58,9 @@ module.exports = {
                 'waldorf-red-dark': "#870317",
                 'waldorf-cream': "#FEF8EA"
 
+            },
+            ringWidth: {
+                '05': '0.5px'
             }
         },
     },
