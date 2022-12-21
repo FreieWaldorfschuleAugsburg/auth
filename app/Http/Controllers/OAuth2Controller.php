@@ -53,7 +53,7 @@ class OAuth2Controller extends Controller
             'redirect_uri' => $requestParameters['redirect_uri']
         ];
 
-        if (Session::has('requestParameters')) {
+        if (!$requestParameters && Session::has('requestParameters')) {
             $requestParameters = Session::get('requestParameters');
         }
 
