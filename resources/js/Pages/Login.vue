@@ -30,22 +30,22 @@ import {watch} from "vue";
 
 
 export default {
+
     name: "Login",
     components: {PageHeader, DefaultRedButton, TextInput, FormError},
     layout: PublicLayout,
     setup() {
-
         const form = useForm({
             samaccountname: null,
             password: null
         })
         const {validate} = usePrevalidate(form, {
             method: Method.POST,
-            url: "/oauth2/authorize"
+            url: `/oauth2/authorize${window.location.search}`
         })
 
         function submit() {
-            form.post('/oauth2/authorize')
+            form.post( `/oauth2/authorize${window.location.search}`)
 
         }
 

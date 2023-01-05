@@ -48,15 +48,13 @@ class OAuth2Controller extends Controller
     public function authorize(Request $request): bool|\Inertia\Response
     {
         $requestParameters = $this->parameterService->getRequestParameters($request);
+        if (!$requestParameters) {
+            throw new InvalidParameterException("Please provide valid parameters!");
+        }
         $clientAttributesToVerify = [
             'client_id' => $requestParameters['client_id'],
             'redirect_uri' => $requestParameters['redirect_uri']
         ];
-
-        if (!$requestParameters && Session::has('requestParameters')) {
-            $requestParameters = Session::get('requestParameters');
-        }
-
         if ($this->parameterService->verifyRequestParameters($requestParameters) && AuthClient::verifyClientAttributes($requestParameters['client_id'], $clientAttributesToVerify)) {
             Session::put("requestParameters", $requestParameters);
             if (Auth::user()) {
