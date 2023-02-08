@@ -97,11 +97,7 @@ class OAuth2Controller extends Controller
             return redirect()->back();
         }
 
-        $credentials = [
-            'samaccountname' => $request->input('samaccountname'),
-            'password' => $request->input('password')
-        ];
-        if (!Auth::attempt($credentials)) {
+        if (!Auth::attempt($request->validated())) {
             return Inertia::location('login', [
             ]);
         }
