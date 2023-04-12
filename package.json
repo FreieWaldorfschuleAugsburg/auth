@@ -2,24 +2,24 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "generate-types": "make_types -i ./resources/js/Models/trans.ts -p proxies.ts samples.json RootName"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.3",
-        "@vitejs/plugin-vue": "^3.0.0",
-        "autoprefixer": "^10.4.12",
+        "@types/node": "^18.15.11",
+        "autoprefixer": "^10.4.13",
         "axios": "^1.1.2",
-        "laravel-vite-plugin": "^0.6.0",
+        "laravel-vite-plugin": "^0.7.2",
         "lodash": "^4.17.19",
-        "postcss": "^8.4.18",
+        "postcss": "^8.4.21",
         "prettier": "2.8.1",
-        "tailwindcss": "^3.2.1",
-        "vite": "^3.0.0",
-        "vue": "^3.2.41"
+        "tailwindcss": "^3.2.4",
+        "vite": "^4.0.0"
     },
     "dependencies": {
         "@inertiajs/vue3": "^1.0.0",
-        "@vitejs/plugin-vue": "^3.2.0",
-        "vue": "^3.2.36"
+        "unplugin-vue-define-options": "^1.2.0",
+        "@vitejs/plugin-vue": "^4.0.0"
     }
 }

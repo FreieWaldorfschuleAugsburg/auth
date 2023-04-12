@@ -16,7 +16,6 @@ use App\models\TokenResponse;
 use App\server\Oauth2Server;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Inertia\Controller;
 use Inertia\Inertia;

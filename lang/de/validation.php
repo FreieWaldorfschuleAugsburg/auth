@@ -163,6 +163,9 @@ return [
         ],
         'password' => [
             'required' => 'Bitte geben Sie ein Passwort an!'
+        ],
+        'username' => [
+            'required' => 'Bitte geben Sie ein Passwort an!'
         ]
 
     ],

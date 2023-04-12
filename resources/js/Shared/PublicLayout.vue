@@ -9,7 +9,8 @@
 </template>
 
 <script>
-import NavigationBar from "@/Components/Nav/NavigationBar.vue";
+
+import NavigationBar from "../Components/Nav/NavigationBar.vue";
 
 export default {
     name: "PublicLayout",

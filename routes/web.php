@@ -14,17 +14,36 @@ use Illuminate\Support\Facades\Route;
 */
 
 
+
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+|
+| These routes regard the public pages of the application, such as the homepage and the login page.
+|
+*/
+
+Route::get("/", [\App\Http\Controllers\IndexController::class, "index"]);
+Route::get("/login", [\App\Http\Controllers\IndexController::class, "showLogin"]);
+Route::post("/login", [\App\Http\Controllers\IndexController::class, "handleLogin"])->name('public.handleLogin');
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| OAUTH Routes
+|--------------------------------------------------------------------------
+|
+| These routes regard the OAUTH part of the application
+|
+*/
+
+
 Route::get('/oauth2/authorize', [\App\Http\Controllers\OAuth2Controller::class, 'authorize']);
 Route::post('/oauth2/authorize', [\App\Http\Controllers\OAuth2Controller::class, 'login']);
-
-
-Route::get('/test/login', [\App\Http\Controllers\TestController::class, 'testLogin']);
-Route::get('/test/confirm', [\App\Http\Controllers\TestController::class, 'testConfirm']);
-
 Route::post('oauth2/confirm', [\App\Http\Controllers\OAuth2Controller::class, 'grantAuthorization']);
 Route::delete('oauth2/confirm', [\App\Http\Controllers\OAuth2Controller::class, 'denyAuthorization']);
-
 Route::post('oauth2/token', [\App\Http\Controllers\OAuth2Controller::class, 'token']);
-
-
-Route::get('admin/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index']);

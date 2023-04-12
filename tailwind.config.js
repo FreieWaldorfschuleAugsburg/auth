@@ -1,31 +1,16 @@
-const defaultTheme = require('tailwindcss/defaultTheme');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/views/**/*.blade.php',
-        './resources/js/**/*.vue',
+        "./resources/**/*.blade.php",
+        "./resources/**/*.js",
+        "./resources/**/*.vue",
     ],
-
     theme: {
         extend: {
             fontFamily: {
-                "inter-bold": ["Inter Bold"],
-                "inter-light": ["Inter Light"],
-                "inter-medium": ["Inter Medium"],
-                "inter-regular": ["Inter Regular"],
-                "inter-semibold": ["Inter SemiBold"],
-
-                "karla-bold": ["Karla Bold"],
-                "karla-extra-bold": ["Karla ExtraBold"],
-                "karla-light": ["Karla Light"],
-                "karla-medium": ["Karla Medium"],
-                "karla-regular": ["Karla Regular"],
-                "karla-semibold": ["Karla SemiBold"],
-
-
+                inter: ['Inter', 'sans-serif'],
+                karla: ['Karla', 'sans-serif'],
             },
             fontSize: {
                 "heading": "34px",
@@ -50,7 +35,6 @@ module.exports = {
                 "body-large": "16px",
                 "body-medium": "14px",
                 "body-small": "12px"
-
             },
             colors: {
                 'waldorf-red': "#99162A",

@@ -163,7 +163,7 @@ return [
         ],
         'password' => [
             'required' => 'Please provide a password!'
-        ]
+        ],
 
     ],
 

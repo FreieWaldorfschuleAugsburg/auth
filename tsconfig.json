@@ -1,9 +1,8 @@
-
 {
-    "include": ["**/*.ts", "**/*.tsx"],
+    "include": ["**/*.vue", "**/*.ts"],
     "compilerOptions": {
         "lib": ["DOM", "DOM.Iterable", "ES2019"],
-        "types": ["vitest/globals"],
+        "types": ["vitest/globals", "unplugin-vue-define-options/macros-global"],
         "isolatedModules": true,
         "esModuleInterop": true,
         "module": "CommonJS",
@@ -14,9 +13,6 @@
         "allowJs": true,
         "forceConsistentCasingInFileNames": true,
         "baseUrl": ".",
-        "paths": {
-            "~/*": ["./resources/*"]
-        },
         "skipLibCheck": true,
 
         // Remix takes care of building everything in `remix build`.

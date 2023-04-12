@@ -1,14 +1,9 @@
 <template>
-    <p class="text-waldorf-red font-karla-semibold text-sm ">{{message}}</p>
+    <p class="text-waldorf-red font-karla-semibold text-sm ">{{ message }}</p>
 </template>
 
-<script>
-export default {
-    name: "FormError",
-    props: {
-        message: String
-    }
-}
+<script setup lang="ts">
+const props = defineProps<{ message: string | undefined }>();
 </script>
 
 <style scoped>

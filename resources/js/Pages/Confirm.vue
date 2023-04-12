@@ -32,11 +32,11 @@ export default {
 
 <script setup lang="ts">
 import {reactive} from "vue";
-import {Inertia} from "@inertiajs/inertia";
 import PageHeader from "@/Components/Common/Page/PageHeader.vue";
 import ClientPermissions from "@/Components/Confirmation/ClientPermissions.vue";
 import DefaultRedButton from "@/Components/Common/Buttons/DefaultRedButton.vue";
 import DefaultButton from "@/Components/Common/Buttons/DefaultButton.vue";
+import { router } from "@inertiajs/vue3";
 
 
 const props = defineProps({
@@ -62,11 +62,11 @@ const subText = `Willkommen bei der Freien Waldorfschule Augsburg! Bitte bestät
 
 
 function accept() {
-    Inertia.post("/oauth2/confirm", acceptData);
+    router.post("/oauth2/confirm", acceptData);
 }
 
 function deny() {
-    Inertia.delete("/oauth2/confirm");
+    router.delete("/oauth2/confirm");
 }
 </script>
 

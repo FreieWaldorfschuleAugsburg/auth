@@ -1,11 +1,13 @@
-import {InertiaForm} from "@inertiajs/inertia-vue3";
 import {watch} from "vue";
-import {Inertia, Method} from "@inertiajs/inertia";
+import { InertiaForm, router } from "@inertiajs/vue3";
 
 
 type LoginForm = {
-    [key: string]: string
+    samaccountname: string | null
+    password: string | null
 }
+
+type Method = "get" | "post"
 
 
 export function usePrevalidate(form: InertiaForm<LoginForm>, {
@@ -16,6 +18,7 @@ export function usePrevalidate(form: InertiaForm<LoginForm>, {
     let needsValidation = false;
 
     watch(() => form.data(), (newData, oldData) => {
+        // @ts-ignore
         let changedFields = Object.keys(newData).filter((field) => newData[field] !== oldData[field])
         changedFields.forEach(changedField => {
             touchedFields.add(changedField);
@@ -26,7 +29,7 @@ export function usePrevalidate(form: InertiaForm<LoginForm>, {
 
 
     function validate() {
-        Inertia.visit(url, {
+        router.visit(url, {
             method,
             data: {
                 ...form.data(),
@@ -40,6 +43,7 @@ export function usePrevalidate(form: InertiaForm<LoginForm>, {
                     .filter(field => !touchedFields.has(field))
                     .forEach(field => delete errors[field])
 
+                // @ts-ignore
                 form.clearErrors().setError(errors)
             }
         })

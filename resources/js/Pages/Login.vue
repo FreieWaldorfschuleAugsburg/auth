@@ -18,15 +18,13 @@
 </template>
 
 <script lang="ts">
-import PublicLayout from "@/Shared/PublicLayout.vue";
-import {useForm} from "@inertiajs/inertia-vue3";
-import {usePrevalidate} from "@/Composables/usePrevalidation";
-import {Method} from "@inertiajs/inertia";
-import FormError from "@/Components/Common/Error/FormError.vue";
-import TextInput from "@/Components/Common/Form/TextInput.vue";
-import DefaultRedButton from "@/Components/Common/Buttons/DefaultRedButton.vue";
-import PageHeader from "@/Components/Common/Page/PageHeader.vue";
-import {watch} from "vue";
+import { useForm } from "@inertiajs/vue3";
+import PublicLayout from "../Shared/PublicLayout.vue";
+import PageHeader from "../Components/Common/Page/PageHeader.vue";
+import DefaultRedButton from "../Components/Common/Buttons/DefaultRedButton.vue";
+import TextInput from "../Components/Common/Form/TextInput.vue";
+import FormError from "../Components/Common/Error/FormError.vue";
+import { usePrevalidate } from "../Composables/usePrevalidation";
 
 
 export default {
@@ -40,15 +38,13 @@ export default {
             password: null
         })
         const {validate} = usePrevalidate(form, {
-            method: Method.POST,
+            method: "post",
             url: `/oauth2/authorize${window.location.search}`
         })
-
         function submit() {
             form.post( `/oauth2/authorize${window.location.search}`)
 
         }
-
         return ({form, validate, submit})
     }
 
@@ -60,7 +56,7 @@ export default {
 <style scoped>
 
 ::placeholder {
-    @apply text-gray-400 font-karla-regular
+    @apply text-gray-400 font-karla font-normal
 }
 
 </style>

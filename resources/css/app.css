@@ -3,76 +3,53 @@
 @tailwind utilities;
 
 
+/*Light*/
 @font-face {
-    font-family: 'Inter Bold';
-    font-style: normal;
-    src: url("/public/assets/fonts/Inter-Bold.woff2");
-}
-
-@font-face {
-    font-family: 'Inter Light';
-    font-style: normal;
-    src: url("/public/assets/fonts/Inter-Light.woff2");
-}
-
-@font-face {
-    font-family: 'Inter Medium';
-    font-style: normal;
-    src: url("/public/assets/fonts/Inter-Medium.woff2");
-}
-
-@font-face {
-    font-family: 'Inter Regular';
-    font-style: normal;
-    src: url("/public/assets/fonts/Inter-Regular.woff2");
-}
-
-@font-face {
-    font-family: 'Inter SemiBold';
-    font-style: normal;
-    src: url("/public/assets/fonts/Inter-SemiBold.woff2");
-}
-
-@font-face {
-    font-family: 'Karla Bold';
-    font-style: normal;
-    src: url("/public/assets/fonts/Karla-Bold.ttf");
-}
-@font-face {
-    font-family: 'Karla ExtraBold';
-    font-style: normal;
-    src: url("/public/assets/fonts/Karla-ExtraBold.ttf");
-}
-
-@font-face {
-    font-family: 'Karla Light';
+    font-family: 'Karla';
+    font-weight: 300;
     font-style: normal;
     src: url("/public/assets/fonts/Karla-Light.ttf");
 }
-@font-face {
-    font-family: 'Karla Medium';
-    font-style: normal;
-    src: url("/public/assets/fonts/Karla-Medium.ttf");
-}
 
+/*Regular*/
 @font-face {
-    font-family: 'Karla Regular';
+    font-family: 'Karla';
+    font-weight: 400;
     font-style: normal;
     src: url("/public/assets/fonts/Karla-Regular.ttf");
 }
 
-
-
-
+/*Medium*/
 @font-face {
-    font-family: 'Karla SemiBold';
+    font-family: 'Karla';
+    font-weight: 500;
+    font-style: normal;
+    src: url("/public/assets/fonts/Karla-Medium.ttf");
+}
+
+/*Semibold*/
+@font-face {
+    font-family: 'Karla';
+    font-weight: 600;
     font-style: normal;
     src: url("/public/assets/fonts/Karla-SemiBold.ttf");
 }
 
+/*Bold*/
+@font-face {
+    font-family: 'Karla';
+    font-weight: 700;
+    font-style: normal;
+    src: url("/public/assets/fonts/Karla-Bold.ttf");
+}
 
-
-
+/*ExtraBold*/
+@font-face {
+    font-family: 'Karla';
+    font-weight: 800;
+    font-style: normal;
+    src: url("/public/assets/fonts/Karla-ExtraBold.ttf");
+}
 
 /*html {*/
 /*    background-color: #FEF8EA;*/

@@ -1,0 +1,20 @@
+{
+    "notAvailable": "Diese Seite ist nicht verfügbar",
+    "notAvailableDescription": "Bitte benutzen Sie diesen Dienst nur in Verbindung mit unterstützten Anwendungen.",
+    "login": {
+        "header": "Anmeldung",
+        "subtext": "Willkommen bei der Freien Waldorfschule Augsburg! Bitte melden Sie sich an!",
+        "labels": {
+            "username": "Benutzername",
+            "password": "Passwort"
+        },
+        "submit": "Anmelden",
+        "errors": {
+            "failed": "Anmeldung fehlgeschlagen! Bitte überprüfen Sie ihre Zugangsdaten!"
+        }
+    },
+    "required": {
+        "username": "Bitte geben Sie einen Benutzernamen an!",
+        "password": "Bitte geben Sie ein Passwort an!"
+    }
+}
